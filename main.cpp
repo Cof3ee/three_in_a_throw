@@ -1,0 +1,183 @@
+#include <SFML/Graphics.hpp>
+#include <vector>
+
+#include "game.h"
+#include "board_element.h"
+
+int determine_x(const int& number_col)
+{
+    int x;
+
+    if (number_col == 0)
+    {
+      return  x = 50;
+    }
+    else if (number_col == 1)
+    {
+      return x = 110;
+    }
+    else if (number_col == 2)
+    {
+      return x = 170;
+    }
+    else if (number_col == 3)
+    {
+      return x = 230;
+    }
+}
+
+int determine_y(const unsigned int& number_row)
+{
+    int y;
+
+    if (number_row == 0)
+    {
+       return y = 150;
+    }
+    else if (number_row == 1)
+    {
+       return y = 210;
+    }
+    else if (number_row == 2)
+    {
+       return y = 270;
+    }
+    else if (number_row == 3)
+    {
+       return y = 330;
+    }
+    else if (number_row == 4)
+    {
+       return y = 390;
+    }
+}
+
+int main()
+{
+    unsigned int rows = 5;
+    unsigned int cols = 4;
+    game g(rows, cols);
+
+    sf::RenderWindow win(sf::VideoMode({ 308,460 }), L"Три в ряд");
+    
+    sf::Texture Textur_Info_Panel;
+    Textur_Info_Panel.loadFromFile("Image/statuds.png");
+    sf::RectangleShape Game_Info_Panel(sf::Vector2f(202, 26));
+    Game_Info_Panel.setTexture(&Textur_Info_Panel);
+    Game_Info_Panel.setPosition(sf::Vector2f(50, 0));
+
+    //Фон
+    sf::Texture texture_background;
+    texture_background.loadFromFile("Image/fon.png");  
+    sf::Sprite Game_background(texture_background);
+
+    //Прогресс уровня
+    sf::Texture Textur_Uroven;
+    Textur_Uroven.loadFromFile("Image/uroven.png");
+    sf::RectangleShape Game_Info_Uroven(sf::Vector2f(168, 39));
+    Game_Info_Uroven.setTexture(&Textur_Uroven);
+    Game_Info_Uroven.setPosition(sf::Vector2f(70, 28));
+
+    //Номер уровня
+    sf::Texture Textur_Number_Level;
+    Textur_Number_Level.loadFromFile("Image/level.png");
+    sf::RectangleShape Game_Number_Level(sf::Vector2f(141, 50));
+    Game_Number_Level.setTexture(&Textur_Number_Level);
+    Game_Number_Level.setPosition(sf::Vector2f(90, 78));
+
+    //Маскот авокадо
+    sf::Texture Textur_Maskot_Avokado;
+    Textur_Maskot_Avokado.loadFromFile("Image/mascot01.png");
+    sf::RectangleShape Game_Maskot_Avokado(sf::Vector2f(79, 136));
+    Game_Maskot_Avokado.setTexture(&Textur_Maskot_Avokado);
+    Game_Maskot_Avokado.setPosition(sf::Vector2f(50, 58));
+
+    //Маскот клубника
+    sf::Texture Textur_Maskot_Klubnika;
+    Textur_Maskot_Klubnika.loadFromFile("Image/mascot2.png");
+    sf::RectangleShape Game_Maskot_Klubnika(sf::Vector2f(101, 130));
+    Game_Maskot_Klubnika.setTexture(&Textur_Maskot_Klubnika);
+    Game_Maskot_Klubnika.setPosition(sf::Vector2f(205, 64));
+
+    //Клубника
+    sf::Texture Textur_Pole_Klubnika;
+    Textur_Pole_Klubnika.loadFromFile("Image/klubnika-tenm.png");
+    sf::RectangleShape Game_Pole_Klubnika(sf::Vector2f(58, 58));
+    Game_Pole_Klubnika.setTexture(&Textur_Pole_Klubnika);
+
+    //Авокадо
+    sf::Texture Textur_Pole_Avokado;
+    Textur_Pole_Avokado.loadFromFile("Image/avokado-tmn.png");
+    sf::RectangleShape Game_Pole_Avokado(sf::Vector2f(58, 58));
+    Game_Pole_Avokado.setTexture(&Textur_Pole_Avokado);
+
+    //Лимон
+    sf::Texture Textur_Pole_Limon;
+    Textur_Pole_Limon.loadFromFile("Image/limon.png");
+    sf::RectangleShape Game_Pole_Limon(sf::Vector2f(58, 58));
+    Game_Pole_Limon.setTexture(&Textur_Pole_Limon);
+   
+
+    while (win.isOpen())
+    {
+        sf::Event event;
+        while (win.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                win.close();
+            }
+        }
+
+        win.clear();
+        
+        //Отрисовка фона
+        win.draw(Game_background);
+
+        ////Отрисовка текстур
+        win.draw(Game_Info_Panel);
+        win.draw(Game_Info_Uroven);
+        win.draw(Game_Number_Level);
+        win.draw(Game_Maskot_Avokado);
+        win.draw(Game_Maskot_Klubnika);
+        
+        //Отрисовка полей
+          //  0 - клубника
+          //  1 - авокадо
+          //  2 - лимон
+
+        //Отрисовка начального поля
+        auto board = g.get_board();
+        int number_row = 0;
+        for (auto row : board)
+        {
+            int number_col = 0;
+            for (auto col : row)
+            {
+                int x = determine_x(number_col);
+                int y = determine_y(number_row);
+                switch (col)
+                {
+                case 0:
+                    Game_Pole_Klubnika.setPosition(sf::Vector2f(x, y));
+                    win.draw(Game_Pole_Klubnika);
+                    break;
+
+                case 1:                    
+                    Game_Pole_Avokado.setPosition(sf::Vector2f(x, y));
+                    win.draw(Game_Pole_Avokado);
+                    break;
+
+                case 2:
+                    Game_Pole_Limon.setPosition(sf::Vector2f(x, y));
+                    win.draw(Game_Pole_Limon);
+                    break;
+                }
+                number_col++;
+            }
+            number_row++;
+        }
+        win.display();
+    }
+    return 0;
+}
