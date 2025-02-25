@@ -1,2 +1,0 @@
-add_library(Image avokado.png avokado-tmn.png fon.png key.png klubnika-svet.png klubnika-tenm.png level.png limon.png limon-svetl.png mascot01.png mascot2.png settings.png statuds.png uroven.png)
-target_include_directories(Image PUBLIC ../)

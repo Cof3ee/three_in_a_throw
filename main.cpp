@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+#include <iostream> //Временно
+
 #include "game.h"
 #include "board_element.h"
 
@@ -54,12 +56,22 @@ int determine_y(const unsigned int& number_row)
 
 int main()
 {
-    unsigned int rows = 5;
-    unsigned int cols = 4;
-    game g(rows, cols);
+    int fieldXStart = 50;
+    int fieldYStart = 150;
+    int fieldXEnd = 230;
+    int fieldYEnd = 390;
+
+    // Вычисляем размеры поля
+    int fieldWidth = fieldXEnd - fieldXStart;
+    int fieldHeight = fieldYEnd - fieldYStart;
+
+    const unsigned int ROWS = 5;
+    const unsigned int COLS = 4;
+    const int TILE_SIZE = 58;
+    game g(ROWS, COLS);
 
     sf::RenderWindow win(sf::VideoMode({ 308,460 }), L"Три в ряд");
-    
+
     sf::Texture Textur_Info_Panel;
     Textur_Info_Panel.loadFromFile("Image/statuds.png");
     sf::RectangleShape Game_Info_Panel(sf::Vector2f(202, 26));
@@ -102,32 +114,63 @@ int main()
     //Клубника
     sf::Texture Textur_Pole_Klubnika;
     Textur_Pole_Klubnika.loadFromFile("Image/klubnika-tenm.png");
-    sf::RectangleShape Game_Pole_Klubnika(sf::Vector2f(58, 58));
+    sf::RectangleShape Game_Pole_Klubnika(sf::Vector2f(TILE_SIZE, TILE_SIZE));
     Game_Pole_Klubnika.setTexture(&Textur_Pole_Klubnika);
 
     //Авокадо
     sf::Texture Textur_Pole_Avokado;
     Textur_Pole_Avokado.loadFromFile("Image/avokado-tmn.png");
-    sf::RectangleShape Game_Pole_Avokado(sf::Vector2f(58, 58));
+    sf::RectangleShape Game_Pole_Avokado(sf::Vector2f(TILE_SIZE, TILE_SIZE));
     Game_Pole_Avokado.setTexture(&Textur_Pole_Avokado);
 
     //Лимон
     sf::Texture Textur_Pole_Limon;
     Textur_Pole_Limon.loadFromFile("Image/limon.png");
-    sf::RectangleShape Game_Pole_Limon(sf::Vector2f(58, 58));
+    sf::RectangleShape Game_Pole_Limon(sf::Vector2f(TILE_SIZE, TILE_SIZE));
     Game_Pole_Limon.setTexture(&Textur_Pole_Limon);
    
+    // --- Создание фигур (RectangleShape) ---
+    std::vector<std::vector<sf::RectangleShape>> board_rects;
+
+    // --- Переменные для отслеживания выбранного элемента ---
+    bool elementSelected = false;
+    int selectedRow = -1;
+    int selectedCol = -1;
 
     while (win.isOpen())
     {
-        sf::Event event;
-        while (win.pollEvent(event))
+        while (const std::optional event = win.pollEvent())
         {
-            if (event.type == sf::Event::Closed)
+            if (event->is<sf::Event::Closed>())
             {
                 win.close();
             }
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(win);
+                //Преобразуем в координаты игрового мира
+                sf::Vector2f worldPos = win.mapPixelToCoords(mousePos);
+                
+                //Проверяем был ли клик в поле
+                if (mousePos.x >= fieldXStart && mousePos.x <= fieldXEnd &&
+                    mousePos.y >= fieldYStart && mousePos.y <= fieldYEnd)
+                {
+                    std::cout << "Click is inside the field!" << std::endl;
+
+                    // Вычисляем смещение клика относительно верхнего левого угла поля
+                    int offsetX = mousePos.x - fieldXStart;
+                    int offsetY = mousePos.y - fieldYStart;
+
+                    // Вычисляем индекс столбца и строки
+                    int columnIndex = offsetX / TILE_SIZE;
+                    int rowIndex = offsetY / TILE_SIZE;
+                    
+                    int board_index = 0;
+                }
+            }
         }
+
 
         win.clear();
         
@@ -145,13 +188,14 @@ int main()
           //  0 - клубника
           //  1 - авокадо
           //  2 - лимон
-
+        
         //Отрисовка начального поля
         auto board = g.get_board();
         int number_row = 0;
         for (auto row : board)
         {
             int number_col = 0;
+            std::vector <sf::RectangleShape>row_rects;
             for (auto col : row)
             {
                 int x = determine_x(number_col);
@@ -161,22 +205,27 @@ int main()
                 case 0:
                     Game_Pole_Klubnika.setPosition(sf::Vector2f(x, y));
                     win.draw(Game_Pole_Klubnika);
+                    row_rects.push_back(Game_Pole_Klubnika);
                     break;
 
                 case 1:                    
                     Game_Pole_Avokado.setPosition(sf::Vector2f(x, y));
                     win.draw(Game_Pole_Avokado);
+                    row_rects.push_back(Game_Pole_Avokado);
                     break;
 
                 case 2:
                     Game_Pole_Limon.setPosition(sf::Vector2f(x, y));
                     win.draw(Game_Pole_Limon);
+                    row_rects.push_back(Game_Pole_Limon);
                     break;
                 }
                 number_col++;
             }
+            board_rects.push_back(row_rects);
             number_row++;
         }
+
         win.display();
     }
     return 0;
