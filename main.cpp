@@ -55,21 +55,42 @@ int determine_y(const unsigned int& number_row)
     }
 }
 
+bool chec_adjancet_cells(const board_element& first,const board_element& second)
+{
+    if (first.row == second.row && first.col == second.col)
+    {
+        return false;
+    }
+
+    int row_diff = std::abs(first.row - second.row);
+    int col_diff = std::abs(first.col - second.col);
+
+    bool horizontal_adjacent = (row_diff == 0 && col_diff == 1);
+    bool vertical_adjacent = (col_diff == 0 && row_diff == 1);
+
+    return horizontal_adjacent || vertical_adjacent;
+}
+
 int main()
 {
-    int fieldXStart = 50;
-    int fieldYStart = 150;
-    int fieldXEnd = 230;
-    int fieldYEnd = 390;
+    int game_field_X_start = 50;
+    int game_field_Y_start = 150;
+    int game_field_X_end = 290;
+    int game_field_Y_end = 450;
 
     // Вычисляем размеры поля
-    int fieldWidth = fieldXEnd - fieldXStart;
-    int fieldHeight = fieldYEnd - fieldYStart;
+    const  int GAME_FIELD_WIDTH = game_field_X_end - game_field_X_start;
+    const  int GAME_FIELD_HEIGHT = game_field_Y_end - game_field_Y_start;
 
-    const unsigned int ROWS = 5;
-    const unsigned int COLS = 4;
-    const int TILE_SIZE = 58;
-    game g(ROWS, COLS);
+    const  int GAME_ROWS = 5;
+    const  int GAME_COLS = 4;
+    const int GAME_CELL_SIZE = 58;
+
+    const  int GAME_CELL_Strawberry = 0;
+    const  int GAME_CELL_Avocado = 1;
+    const  int GAME_CELL_Limon = 2;
+
+    game game_field(GAME_ROWS, GAME_COLS);
 
     sf::RenderWindow win(sf::VideoMode({ 308,460 }), L"Три в ряд");
 
@@ -107,55 +128,57 @@ int main()
         Game_Maskot_Avokado.setPosition(sf::Vector2f(50, 58));
 
         //Маскот клубника
-        sf::Texture Textur_Maskot_Klubnika;
-        Textur_Maskot_Klubnika.loadFromFile("Image/mascot2.png");
-        sf::RectangleShape Game_Maskot_Klubnika(sf::Vector2f(101, 130));
-        Game_Maskot_Klubnika.setTexture(&Textur_Maskot_Klubnika);
-        Game_Maskot_Klubnika.setPosition(sf::Vector2f(205, 64));
+        sf::Texture Textur_Maskot_Strawberry;
+        Textur_Maskot_Strawberry.loadFromFile("Image/mascot2.png");
+        sf::RectangleShape Game_Maskot_Strawberry(sf::Vector2f(101, 130));
+        Game_Maskot_Strawberry.setTexture(&Textur_Maskot_Strawberry);
+        Game_Maskot_Strawberry.setPosition(sf::Vector2f(205, 64));
 
     //Клубника
-    sf::Texture Textur_Pole_Klubnika;
-    Textur_Pole_Klubnika.loadFromFile("Image/klubnika-tenm.png");
-    sf::RectangleShape Game_Pole_Klubnika(sf::Vector2f(TILE_SIZE, TILE_SIZE));
-    Game_Pole_Klubnika.setTexture(&Textur_Pole_Klubnika);
+    sf::Texture Textur_Cell_Strawberry;
+    Textur_Cell_Strawberry.loadFromFile("Image/klubnika-tenm.png");
+    sf::RectangleShape Game_Cell_Strawberry(sf::Vector2f(GAME_CELL_SIZE, GAME_CELL_SIZE));
+    Game_Cell_Strawberry.setTexture(&Textur_Cell_Strawberry);
 
     //Авокадо
-    sf::Texture Textur_Pole_Avokado;
-    Textur_Pole_Avokado.loadFromFile("Image/avokado-tmn.png");
-    sf::RectangleShape Game_Pole_Avokado(sf::Vector2f(TILE_SIZE, TILE_SIZE));
-    Game_Pole_Avokado.setTexture(&Textur_Pole_Avokado);
+    sf::Texture Textur_Cell_Avokado;
+    Textur_Cell_Avokado.loadFromFile("Image/avokado-tmn.png");
+    sf::RectangleShape Game_Cell_Avokado(sf::Vector2f(GAME_CELL_SIZE, GAME_CELL_SIZE));
+    Game_Cell_Avokado.setTexture(&Textur_Cell_Avokado);
 
     //Лимон
-    sf::Texture Textur_Pole_Limon;
-    Textur_Pole_Limon.loadFromFile("Image/limon.png");
-    sf::RectangleShape Game_Pole_Limon(sf::Vector2f(TILE_SIZE, TILE_SIZE));
-    Game_Pole_Limon.setTexture(&Textur_Pole_Limon);
+    sf::Texture Textur_Cell_Limon;
+    Textur_Cell_Limon.loadFromFile("Image/limon.png");
+    sf::RectangleShape Game_Cell_Limon(sf::Vector2f(GAME_CELL_SIZE, GAME_CELL_SIZE));
+    Game_Cell_Limon.setTexture(&Textur_Cell_Limon);
 
     //Светлая клубника
-    sf::Texture Textur_Pole_Klubnika_Light;
-    Textur_Pole_Klubnika_Light.loadFromFile("Image/klubnika-svet.png");
-    sf::RectangleShape Game_Pole_Klubnika_Light(sf::Vector2f(TILE_SIZE, TILE_SIZE));
-    Game_Pole_Klubnika_Light.setTexture(&Textur_Pole_Klubnika_Light);
+    sf::Texture Textur_Cell_Strawberry_Light;
+    Textur_Cell_Strawberry_Light.loadFromFile("Image/klubnika-svet.png");
+    sf::RectangleShape Game_Cell_Strawberry_Light(sf::Vector2f(GAME_CELL_SIZE, GAME_CELL_SIZE));
+    Game_Cell_Strawberry_Light.setTexture(&Textur_Cell_Strawberry_Light);
 
     //Светлое авокадо
-    sf::Texture Textur_Pole_Avokado_Light;
-    Textur_Pole_Avokado_Light.loadFromFile("Image/avokado.png");
-    sf::RectangleShape Game_Pole_Avokado_Light(sf::Vector2f(TILE_SIZE, TILE_SIZE));
-    Game_Pole_Avokado_Light.setTexture(&Textur_Pole_Avokado_Light);
+    sf::Texture Textur_Cell_Avokado_Light;
+    Textur_Cell_Avokado_Light.loadFromFile("Image/avokado.png");
+    sf::RectangleShape Game_Cell_Avokado_Light(sf::Vector2f(GAME_CELL_SIZE, GAME_CELL_SIZE));
+    Game_Cell_Avokado_Light.setTexture(&Textur_Cell_Avokado_Light);
 
     //Светлый лимон
-    sf::Texture Textur_Pole_Limon_Light;
-    Textur_Pole_Limon_Light.loadFromFile("Image/limon-svetl.png");
-    sf::RectangleShape Game_Pole_Limon_Light(sf::Vector2f(TILE_SIZE, TILE_SIZE));
-    Game_Pole_Limon_Light.setTexture(&Textur_Pole_Limon_Light);
+    sf::Texture Textur_Cell_Limon_Light;
+    Textur_Cell_Limon_Light.loadFromFile("Image/limon-svetl.png");
+    sf::RectangleShape Game_Cell_Limon_Light(sf::Vector2f(GAME_CELL_SIZE, GAME_CELL_SIZE));
+    Game_Cell_Limon_Light.setTexture(&Textur_Cell_Limon_Light);
 
     // --- Создание фигур (RectangleShape) ---
     std::vector<std::vector<tile_field>> board_rects;
 
-    //Отрисовка поля
-    auto board = g.get_board();
+    //  0 - клубника
+    //  1 - авокадо
+    //  2 - лимон
+    auto game_board = game_field.get_board();
     int number_row = 0;
-    for (auto row : board)
+    for (auto row : game_board)
     {
         int number_col = 0;
         std::vector<tile_field> row_rects;
@@ -168,20 +191,23 @@ int main()
             switch (col)
             {
             case 0:
-                Game_Pole_Klubnika.setPosition(sf::Vector2f(x, y));
-                t.field_texture = Game_Pole_Klubnika;
+                Game_Cell_Strawberry.setPosition(sf::Vector2f(x, y));
+                t.field_texture = Game_Cell_Strawberry;
+                t.field_name_number = 0;
                 row_rects.push_back(t);
                 break;
 
             case 1:
-                Game_Pole_Avokado.setPosition(sf::Vector2f(x, y));
-                t.field_texture = Game_Pole_Avokado;
+                Game_Cell_Avokado.setPosition(sf::Vector2f(x, y));
+                t.field_texture = Game_Cell_Avokado;
+                t.field_name_number = 1;
                 row_rects.push_back(t);
                 break;
 
             case 2:
-                Game_Pole_Limon.setPosition(sf::Vector2f(x, y));
-                t.field_texture = Game_Pole_Limon;
+                Game_Cell_Limon.setPosition(sf::Vector2f(x, y));
+                t.field_texture = Game_Cell_Limon;
+                t.field_name_number = 2;
                 row_rects.push_back(t);
                 break;
             }
@@ -191,6 +217,7 @@ int main()
         number_row++;
     }
    
+    board_element cell_to_swap;
     while (win.isOpen())
     {
         while (const std::optional event = win.pollEvent())
@@ -199,64 +226,128 @@ int main()
             {
                 win.close();
             }
-
-            if(sf::Mouse::isButtonPressed)
+            if(const auto* mouse_button_pressed = event->getIf<sf::Event::MouseButtonReleased>())
             {
+                sf::Event::MouseButtonReleased a;
                 sf::Vector2i mousePos = sf::Mouse::getPosition(win);
                 //Преобразуем в координаты игрового мира
                 sf::Vector2f worldPos = win.mapPixelToCoords(mousePos);
 
-                ////Проверяем был ли клик в поле
-                //if (mousePos.x >= fieldXStart && mousePos.x <= fieldXEnd &&
-                //    mousePos.y >= fieldYStart && mousePos.y <= fieldYEnd)
-                //{
+                //Проверяем был ли клик в поле
+                if (mousePos.x >= game_field_X_start && mousePos.x <= game_field_X_end &&
+                    mousePos.y >= game_field_Y_start && mousePos.y <= game_field_Y_end)
+                {
                     // Вычисляем смещение клика относительно верхнего левого угла поля
-                    int offsetX = mousePos.x - fieldXStart;
-                    int offsetY = mousePos.y - fieldYStart;
+                    int offsetX = mousePos.x - game_field_X_start;
+                    int offsetY = mousePos.y - game_field_Y_start;
 
+                    board_element selected_cell;
                     // Вычисляем индекс столбца и строки
-                    int columnIndex = offsetX / TILE_SIZE;
-                    int rowIndex = offsetY / TILE_SIZE;
+                    selected_cell.col = offsetX / GAME_CELL_SIZE;
+                    selected_cell.row = offsetY / GAME_CELL_SIZE;
 
-                    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+                    int x = determine_x(selected_cell.col);
+                    int y = determine_y(selected_cell.row);
+
+                    if (mouse_button_pressed->button == sf::Mouse::Button::Left)
                     {
                         std::cout << "Click left!" << std::endl;
-                        int x = determine_x(columnIndex);
-                        int y = determine_y(rowIndex);
-
-                        Game_Pole_Limon_Light.setPosition(sf::Vector2f(x, y));
-                        board_rects[rowIndex][columnIndex].field_texture = Game_Pole_Limon_Light;
                         
+
+                        cell_to_swap.row = selected_cell.row;
+                        cell_to_swap.col= selected_cell.col;
+
+                        if (board_rects[selected_cell.row][selected_cell.col].field_name_number == GAME_CELL_Strawberry)
+                        {
+                            Game_Cell_Strawberry_Light.setPosition(sf::Vector2f(x, y));
+                            board_rects[selected_cell.row][selected_cell.col].field_texture = Game_Cell_Strawberry_Light;
+                        }
+                        else if (board_rects[selected_cell.row][selected_cell.col].field_name_number == GAME_CELL_Avocado)
+                        {
+                            Game_Cell_Avokado_Light.setPosition(sf::Vector2f(x, y));
+                            board_rects[selected_cell.row][selected_cell.col].field_texture = Game_Cell_Avokado_Light;
+                        }
+                        else if (board_rects[selected_cell.row][selected_cell.col].field_name_number == GAME_CELL_Limon)
+                        {
+                            Game_Cell_Limon_Light.setPosition(sf::Vector2f(x, y));
+                            board_rects[selected_cell.row][selected_cell.col].field_texture = Game_Cell_Limon_Light;
+                        }   
                     }
-                    else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+                    else if (mouse_button_pressed->button == sf::Mouse::Button::Right)
                     {
                         std::cout << "Click right!" << std::endl;
+
+                        if (chec_adjancet_cells(cell_to_swap,selected_cell))
+                        {
+                            game_field.display();
+                            game_field.make_move(cell_to_swap, selected_cell);
+                            std::cout << std::endl;
+                            game_field.display();
+
+                            board_rects.clear();
+                            auto game_board = game_field.get_board();
+                            int number_row = 0;
+                            for (auto row : game_board)
+                            {
+                                int number_col = 0;
+                                std::vector<tile_field> row_rects;
+                                for (auto col : row)
+                                {
+                                    tile_field t;
+                                    int x = determine_x(number_col);
+                                    int y = determine_y(number_row);
+
+                                    switch (col)
+                                    {
+                                    case 0:
+                                        Game_Cell_Strawberry.setPosition(sf::Vector2f(x, y));
+                                        t.field_texture = Game_Cell_Strawberry;
+                                        t.field_name_number = 0;
+                                        row_rects.push_back(t);
+                                        break;
+
+                                    case 1:
+                                        Game_Cell_Avokado.setPosition(sf::Vector2f(x, y));
+                                        t.field_texture = Game_Cell_Avokado;
+                                        t.field_name_number = 1;
+                                        row_rects.push_back(t);
+                                        break;
+
+                                    case 2:
+                                        Game_Cell_Limon.setPosition(sf::Vector2f(x, y));
+                                        t.field_texture = Game_Cell_Limon;
+                                        t.field_name_number = 2;
+                                        row_rects.push_back(t);
+                                        break;
+                                    }
+                                    number_col++;
+                                }
+                                board_rects.push_back(row_rects);
+                                number_row++;
+
+                                selected_cell.row = -1;
+                                selected_cell.col = -1;
+                            }
+                        }
                     }
-                //}
-                //else
-                //{
-                //    /*std::cout << "Click is inside the field!" << std::endl;*/
-                //}
+                }
+                else
+                {
+                    std::cout << "Click is inside the field!" << std::endl;
+                }
             }
         }
-
-
         win.clear();
         
         //Отрисовка фона
         win.draw(Game_background);
-
         ////Отрисовка текстур
         win.draw(Game_Info_Panel);
         win.draw(Game_Info_Uroven);
         win.draw(Game_Number_Level);
         win.draw(Game_Maskot_Avokado);
-        win.draw(Game_Maskot_Klubnika);
-        
-        //Отрисовка полей
-          //  0 - клубника
-          //  1 - авокадо
-          //  2 - лимон
+        win.draw(Game_Maskot_Strawberry);
+       
         
        // Отрисовываем все плитки
         for (const auto& row : board_rects)

@@ -2,6 +2,6 @@
 
 struct board_element
 {
-	unsigned int row;
-	unsigned int col;
+	 int row;
+	 int col;
 };
