@@ -3,9 +3,10 @@
 
 #include <iostream> //Временно
 
-#include "game.h"
+#include "game_board_logic.h"
 #include "board_element.h"
 #include "tile_field.h"
+#include "constants.h"
 
 int determine_x(const int& number_col)
 {
@@ -73,33 +74,15 @@ bool chec_adjancet_cells(const board_element& first,const board_element& second)
 
 int main()
 {
-    int game_field_X_start = 50;
-    int game_field_Y_start = 150;
-    int game_field_X_end = 290;
-    int game_field_Y_end = 450;
+    game_board_logic game_field(GAME_ROWS, GAME_COLS);
 
-    // Вычисляем размеры поля
-    const  int GAME_FIELD_WIDTH = game_field_X_end - game_field_X_start;
-    const  int GAME_FIELD_HEIGHT = game_field_Y_end - game_field_Y_start;
+    sf::RenderWindow win(sf::VideoMode({ 330,460 }), L"Три в ряд");
 
-    const  int GAME_ROWS = 5;
-    const  int GAME_COLS = 4;
-    const int GAME_CELL_SIZE = 58;
-
-    const  int GAME_CELL_Strawberry = 0;
-    const  int GAME_CELL_Avocado = 1;
-    const  int GAME_CELL_Limon = 2;
-
-    game game_field(GAME_ROWS, GAME_COLS);
-
-    sf::RenderWindow win(sf::VideoMode({ 308,460 }), L"Три в ряд");
-
-    
-        sf::Texture Textur_Info_Panel;
-        Textur_Info_Panel.loadFromFile("Image/statuds.png");
-        sf::RectangleShape Game_Info_Panel(sf::Vector2f(202, 26));
-        Game_Info_Panel.setTexture(&Textur_Info_Panel);
-        Game_Info_Panel.setPosition(sf::Vector2f(50, 0));
+    sf::Texture Textur_Info_Panel;
+    Textur_Info_Panel.loadFromFile("Image/statuds.png");
+    sf::RectangleShape Game_Info_Panel(sf::Vector2f(202, 26));
+    Game_Info_Panel.setTexture(&Textur_Info_Panel);
+    Game_Info_Panel.setPosition(sf::Vector2f(50, 0));
 
         //Фон
         sf::Texture texture_background;
@@ -170,8 +153,21 @@ int main()
     sf::RectangleShape Game_Cell_Limon_Light(sf::Vector2f(GAME_CELL_SIZE, GAME_CELL_SIZE));
     Game_Cell_Limon_Light.setTexture(&Textur_Cell_Limon_Light);
 
+    sf::Texture Textur_Key;
+    Textur_Key.loadFromFile("Image/key.png");
+    sf::RectangleShape Game_Key(sf::Vector2f(40, 40));
+    Game_Key.setTexture(&Textur_Key);
+    Game_Key.setPosition(sf::Vector2f(10, 420));
+
+    sf::Texture Textur_Settings;
+    Textur_Settings.loadFromFile("Image/settings.png");
+    sf::RectangleShape Game_Settings(sf::Vector2f(40, 40));
+    Game_Settings.setTexture(&Textur_Settings);
+    Game_Settings.setPosition(sf::Vector2f(290, 420));
+
+
     // --- Создание фигур (RectangleShape) ---
-    std::vector<std::vector<tile_field>> board_rects;
+    std::vector<std::vector<tile_field>> board_textures;
 
     //  0 - клубника
     //  1 - авокадо
@@ -213,7 +209,7 @@ int main()
             }
             number_col++;
         }
-        board_rects.push_back(row_rects);
+        board_textures.push_back(row_rects);
         number_row++;
     }
    
@@ -234,12 +230,12 @@ int main()
                 sf::Vector2f worldPos = win.mapPixelToCoords(mousePos);
 
                 //Проверяем был ли клик в поле
-                if (mousePos.x >= game_field_X_start && mousePos.x <= game_field_X_end &&
-                    mousePos.y >= game_field_Y_start && mousePos.y <= game_field_Y_end)
+                if (mousePos.x >= GAME_FIELD_X_START && mousePos.x <= GAME_FIELD_X_END &&
+                    mousePos.y >= GAME_FIELD_Y_START && mousePos.y <= GAME_FIELD_Y_END)
                 {
                     // Вычисляем смещение клика относительно верхнего левого угла поля
-                    int offsetX = mousePos.x - game_field_X_start;
-                    int offsetY = mousePos.y - game_field_Y_start;
+                    int offsetX = mousePos.x - GAME_FIELD_X_START;
+                    int offsetY = mousePos.y - GAME_FIELD_Y_START;
 
                     board_element selected_cell;
                     // Вычисляем индекс столбца и строки
@@ -257,20 +253,20 @@ int main()
                         cell_to_swap.row = selected_cell.row;
                         cell_to_swap.col= selected_cell.col;
 
-                        if (board_rects[selected_cell.row][selected_cell.col].field_name_number == GAME_CELL_Strawberry)
+                        if (board_textures[selected_cell.row][selected_cell.col].field_name_number == GAME_CELL_Strawberry)
                         {
                             Game_Cell_Strawberry_Light.setPosition(sf::Vector2f(x, y));
-                            board_rects[selected_cell.row][selected_cell.col].field_texture = Game_Cell_Strawberry_Light;
+                            board_textures[selected_cell.row][selected_cell.col].field_texture = Game_Cell_Strawberry_Light;
                         }
-                        else if (board_rects[selected_cell.row][selected_cell.col].field_name_number == GAME_CELL_Avocado)
+                        else if (board_textures[selected_cell.row][selected_cell.col].field_name_number == GAME_CELL_Avocado)
                         {
                             Game_Cell_Avokado_Light.setPosition(sf::Vector2f(x, y));
-                            board_rects[selected_cell.row][selected_cell.col].field_texture = Game_Cell_Avokado_Light;
+                            board_textures[selected_cell.row][selected_cell.col].field_texture = Game_Cell_Avokado_Light;
                         }
-                        else if (board_rects[selected_cell.row][selected_cell.col].field_name_number == GAME_CELL_Limon)
+                        else if (board_textures[selected_cell.row][selected_cell.col].field_name_number == GAME_CELL_Limon)
                         {
                             Game_Cell_Limon_Light.setPosition(sf::Vector2f(x, y));
-                            board_rects[selected_cell.row][selected_cell.col].field_texture = Game_Cell_Limon_Light;
+                            board_textures[selected_cell.row][selected_cell.col].field_texture = Game_Cell_Limon_Light;
                         }   
                     }
                     else if (mouse_button_pressed->button == sf::Mouse::Button::Right)
@@ -284,7 +280,7 @@ int main()
                             std::cout << std::endl;
                             game_field.display();
 
-                            board_rects.clear();
+                            board_textures.clear();
                             auto game_board = game_field.get_board();
                             int number_row = 0;
                             for (auto row : game_board)
@@ -322,7 +318,7 @@ int main()
                                     }
                                     number_col++;
                                 }
-                                board_rects.push_back(row_rects);
+                                board_textures.push_back(row_rects);
                                 number_row++;
 
                                 selected_cell.row = -1;
@@ -347,10 +343,11 @@ int main()
         win.draw(Game_Number_Level);
         win.draw(Game_Maskot_Avokado);
         win.draw(Game_Maskot_Strawberry);
+        win.draw(Game_Key);
+        win.draw(Game_Settings);
        
-        
        // Отрисовываем все плитки
-        for (const auto& row : board_rects)
+        for (const auto& row : board_textures)
         {
             for (const auto& col : row)
             {

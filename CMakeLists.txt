@@ -14,5 +14,5 @@ if(NOT sfml_POPULATED)
     add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR})
 endif()
 
-add_executable(three_in_throw board_element.h game.h game.cpp game_board.h game_board.cpp tile_field.h main.cpp)
+add_executable(three_in_throw board_element.h game_board_logic.h game_board_logic.cpp game_board.h game_board.cpp tile_field.h game_field_textures.h game_field_textures.cpp game_window_textures.h game_window_textures.cpp constants.h main.cpp)
 target_link_libraries(three_in_throw PRIVATE SFML::Graphics)
