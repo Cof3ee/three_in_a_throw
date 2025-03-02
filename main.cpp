@@ -7,6 +7,7 @@
 #include "board_element.h"
 #include "tile_field.h"
 #include "constants.h"
+#include "game_window_textures.h"
 
 int determine_x(const int& number_col)
 {
@@ -78,44 +79,47 @@ int main()
 
     sf::RenderWindow win(sf::VideoMode({ 330,460 }), L"Три в ряд");
 
-    sf::Texture Textur_Info_Panel;
-    Textur_Info_Panel.loadFromFile("Image/statuds.png");
-    sf::RectangleShape Game_Info_Panel(sf::Vector2f(202, 26));
-    Game_Info_Panel.setTexture(&Textur_Info_Panel);
-    Game_Info_Panel.setPosition(sf::Vector2f(50, 0));
+    game_window_textures textures;
 
-        //Фон
-        sf::Texture texture_background;
-        texture_background.loadFromFile("Image/fon.png");
-        sf::Sprite Game_background(texture_background);
+    textures.Info_Panel.texture.loadFromFile("Image/statuds.png");
+    textures.Info_Panel.game_view.setSize(sf::Vector2f(202, 26));
+    textures.Info_Panel.game_view.setTexture(&textures.Info_Panel.texture);
+    textures.Info_Panel.game_view.setPosition(sf::Vector2f(50, 0));
 
-        //Прогресс уровня
-        sf::Texture Textur_Uroven;
-        Textur_Uroven.loadFromFile("Image/uroven.png");
-        sf::RectangleShape Game_Info_Uroven(sf::Vector2f(168, 39));
-        Game_Info_Uroven.setTexture(&Textur_Uroven);
-        Game_Info_Uroven.setPosition(sf::Vector2f(70, 28));
+    textures.Background.texture.loadFromFile("Image/fon.png");
+    textures.Background.game_view.setSize(sf::Vector2f(390, 460));
+    textures.Background.game_view.setTexture(&textures.Background.texture);
+    textures.Background.game_view.setPosition(sf::Vector2f(-40, 0));
 
-        //Номер уровня
-        sf::Texture Textur_Number_Level;
-        Textur_Number_Level.loadFromFile("Image/level.png");
-        sf::RectangleShape Game_Number_Level(sf::Vector2f(141, 50));
-        Game_Number_Level.setTexture(&Textur_Number_Level);
-        Game_Number_Level.setPosition(sf::Vector2f(90, 78));
+    textures.Level_Progress.texture.loadFromFile("Image/uroven.png");
+    textures.Level_Progress.game_view.setSize(sf::Vector2f(168, 39));
+    textures.Level_Progress.game_view.setTexture(&textures.Level_Progress.texture);
+    textures.Level_Progress.game_view.setPosition(sf::Vector2f(70, 28));
 
-        //Маскот авокадо
-        sf::Texture Textur_Maskot_Avokado;
-        Textur_Maskot_Avokado.loadFromFile("Image/mascot01.png");
-        sf::RectangleShape Game_Maskot_Avokado(sf::Vector2f(79, 136));
-        Game_Maskot_Avokado.setTexture(&Textur_Maskot_Avokado);
-        Game_Maskot_Avokado.setPosition(sf::Vector2f(50, 58));
+    textures.Number_Level.texture.loadFromFile("Image/level.png");
+    textures.Number_Level.game_view.setSize(sf::Vector2f(141, 50));
+    textures.Number_Level.game_view.setTexture(&textures.Number_Level.texture);
+    textures.Number_Level.game_view.setPosition(sf::Vector2f(90, 78));
 
-        //Маскот клубника
-        sf::Texture Textur_Maskot_Strawberry;
-        Textur_Maskot_Strawberry.loadFromFile("Image/mascot2.png");
-        sf::RectangleShape Game_Maskot_Strawberry(sf::Vector2f(101, 130));
-        Game_Maskot_Strawberry.setTexture(&Textur_Maskot_Strawberry);
-        Game_Maskot_Strawberry.setPosition(sf::Vector2f(205, 64));
+    textures.Maskot_Avokado.texture.loadFromFile("Image/mascot01.png");
+    textures.Maskot_Avokado.game_view.setSize(sf::Vector2f(79, 136));
+    textures.Maskot_Avokado.game_view.setTexture(&textures.Maskot_Avokado.texture);
+    textures.Maskot_Avokado.game_view.setPosition(sf::Vector2f(50, 58));
+
+    textures.Maskot_Strawberry.texture.loadFromFile("Image/mascot2.png");
+    textures.Maskot_Strawberry.game_view.setSize(sf::Vector2f(101, 130));
+    textures.Maskot_Strawberry.game_view.setTexture(&textures.Maskot_Strawberry.texture);
+    textures.Maskot_Strawberry.game_view.setPosition(sf::Vector2f(205, 64));
+
+    textures.Key.texture.loadFromFile("Image/key.png");
+    textures.Key.game_view.setSize(sf::Vector2f(40, 40));
+    textures.Key.game_view.setTexture(&textures.Key.texture);
+    textures.Key.game_view.setPosition(sf::Vector2f(10, 420));
+
+    textures.Settings.texture.loadFromFile("Image/settings.png");
+    textures.Settings.game_view.setSize(sf::Vector2f(40, 40));
+    textures.Settings.game_view.setTexture(&textures.Settings.texture);
+    textures.Settings.game_view.setPosition(sf::Vector2f(290, 420));
 
     //Клубника
     sf::Texture Textur_Cell_Strawberry;
@@ -152,19 +156,6 @@ int main()
     Textur_Cell_Limon_Light.loadFromFile("Image/limon-svetl.png");
     sf::RectangleShape Game_Cell_Limon_Light(sf::Vector2f(GAME_CELL_SIZE, GAME_CELL_SIZE));
     Game_Cell_Limon_Light.setTexture(&Textur_Cell_Limon_Light);
-
-    sf::Texture Textur_Key;
-    Textur_Key.loadFromFile("Image/key.png");
-    sf::RectangleShape Game_Key(sf::Vector2f(40, 40));
-    Game_Key.setTexture(&Textur_Key);
-    Game_Key.setPosition(sf::Vector2f(10, 420));
-
-    sf::Texture Textur_Settings;
-    Textur_Settings.loadFromFile("Image/settings.png");
-    sf::RectangleShape Game_Settings(sf::Vector2f(40, 40));
-    Game_Settings.setTexture(&Textur_Settings);
-    Game_Settings.setPosition(sf::Vector2f(290, 420));
-
 
     // --- Создание фигур (RectangleShape) ---
     std::vector<std::vector<tile_field>> board_textures;
@@ -336,15 +327,15 @@ int main()
         win.clear();
         
         //Отрисовка фона
-        win.draw(Game_background);
+        win.draw(textures.Background.game_view);
         ////Отрисовка текстур
-        win.draw(Game_Info_Panel);
-        win.draw(Game_Info_Uroven);
-        win.draw(Game_Number_Level);
-        win.draw(Game_Maskot_Avokado);
-        win.draw(Game_Maskot_Strawberry);
-        win.draw(Game_Key);
-        win.draw(Game_Settings);
+        win.draw(textures.Info_Panel.game_view);
+        win.draw(textures.Level_Progress.game_view);
+        win.draw(textures.Number_Level.game_view);
+        win.draw(textures.Maskot_Avokado.game_view);
+        win.draw(textures.Maskot_Strawberry.game_view);
+        win.draw(textures.Key.game_view);
+        win.draw(textures.Settings.game_view);
        
        // Отрисовываем все плитки
         for (const auto& row : board_textures)
