@@ -11,7 +11,7 @@
 
 int determine_x(const int& number_col)
 {
-    int x;
+    int x = 0;
 
     if (number_col == 0)
     {
@@ -33,7 +33,7 @@ int determine_x(const int& number_col)
 
 int determine_y(const unsigned int& number_row)
 {
-    int y;
+    int y = 0;
 
     if (number_row == 0)
     {
@@ -57,7 +57,7 @@ int determine_y(const unsigned int& number_row)
     }
 }
 
-bool chec_adjancet_cells(const board_element& first,const board_element& second)
+bool chec_adjancet_cells(const board_element& first, const board_element& second)
 {
     if (first.row == second.row && first.col == second.col)
     {

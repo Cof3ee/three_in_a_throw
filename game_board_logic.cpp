@@ -1,9 +1,7 @@
 #include "game_board_logic.h"
 
 game_board_logic::game_board_logic(const int &rows,const int &cols) : board_(rows,cols)
-{
-
-}
+{}
 
 void game_board_logic::make_move(const board_element &first, const board_element &second)
 {

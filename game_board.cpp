@@ -5,25 +5,10 @@
 
 using namespace std;
 
-game_board::game_board(const  int& rows, const  int& cols) : rows_(rows), cols_(cols)
+game_board::game_board(const  int& rows, const  int& cols) : num_rows_(rows), num_cols_(cols)
 {
-	fill_board();
+	fill_board_random_values();
 	check_three_in_throw();
-}
-
-void game_board::display()
-{
-	int r = 0;
-	for (const auto& row : board_)
-	{
-		cout << "row " << r << ": ";
-		for (int val : row)
-		{
-			std::cout << val << " ";
-		}
-		std::cout << std::endl;
-		r++;
-	}
 }
 
 void game_board::check_three_in_throw()
@@ -35,13 +20,13 @@ void game_board::check_three_in_throw()
 	} while (check_three_in_a_row()&& check_three_in_a_col());
 }
 
-void game_board::fill_board()
+void game_board::fill_board_random_values()
 {
-	for (size_t i = 0; i < rows_; i++)
+	for (size_t i = 0; i < num_rows_; i++)
 	{
 		vector< int> rows;
 
-		for (size_t i = 0; i < cols_; i++)
+		for (size_t i = 0; i < num_cols_; i++)
 		{
 			rows.push_back(generate_random_number());
 		}
@@ -93,10 +78,10 @@ bool game_board::has_three_consecutive_equal(const vector< int>& row)
 bool game_board::check_three_in_a_col()
 {
 	bool argument = false;
-	for(size_t index_col=0; index_col< cols_;++index_col)
+	for(size_t index_col=0; index_col< num_cols_;++index_col)
 	{
 		vector <int>value_in_cols;
-		for (size_t index_row = 0; index_row < rows_; ++index_row)
+		for (size_t index_row = 0; index_row < num_rows_; ++index_row)
 		{
 			value_in_cols.push_back(board_[index_row][index_col]);
 		}
@@ -108,7 +93,7 @@ bool game_board::check_three_in_a_col()
 				replace_three_consecutive_equal(value_in_cols);
 			} while (has_three_consecutive_equal(value_in_cols));
 
-			for (size_t index_row = 0; index_row < rows_; ++index_row)
+			for (size_t index_row = 0; index_row < num_rows_; ++index_row)
 			{
 				board_[index_row][index_col] = value_in_cols[index_row];
 			}
@@ -142,8 +127,8 @@ bool game_board::swap_elemnts(const board_element& first, const board_element& s
 {
 	//ÎÐÃÀÍÈÇÎÂÀÒÜ ÏÐÎÂÅÐÊÓ Â ÎÒÄÅËÜÍÓÞ ÔÓÍÊÖÈÞ
 	// Ïðîâåðÿåì, ÷òî êîîðäèíàòû íàõîäÿòñÿ â ïðåäåëàõ ãðàíèö ïîëÿ
-	if (first.row < 0 || first.row >= rows_ || first.col < 0 || first.col >= cols_ ||
-		second.row < 0 || second.row >= rows_ || second.col < 0 || second.col >= cols_)
+	if (first.row < 0 || first.row >= num_rows_ || first.col < 0 || first.col >= num_cols_ ||
+		second.row < 0 || second.row >= num_rows_ || second.col < 0 || second.col >= num_cols_)
 	{
 		std::cerr << "Error: Invalid coordinates for swap." << std::endl;
 		return false; // Êîîðäèíàòû âíå äîïóñòèìîãî äèàïàçîíà
@@ -159,3 +144,19 @@ vector<vector< int>> game_board::get_board()
 	return board_;
 }
 
+#ifdef DEBUG
+void game_board::display()
+{
+	int r = 0;
+	for (const auto& row : board_)
+	{
+		cout << "row " << r << ": ";
+		for (int val : row)
+		{
+			std::cout << val << " ";
+		}
+		std::cout << std::endl;
+		r++;
+	}
+}
+#endif
